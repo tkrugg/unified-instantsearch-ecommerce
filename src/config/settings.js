@@ -14,8 +14,8 @@
 */
 
 import React from 'preact/compat';
-import { Hit } from './Hit';
 
+import './Hit.scss';
 /*
 |-------------------------------------------------------------------------------
 | Base configuration                           http://alg.li/unified/base-config
@@ -29,19 +29,88 @@ import { Hit } from './Hit';
 |
 */
 
-export const inputContainer = '#search-button';
+var algoliaData = {
+  'hitComponent': ({ hit }) => {
+    console.log(hit);
+
+    const img = hit.image_groups.find(imageGroup => imageGroup.view_type === 'large').images[0];
+    const price = hit.price[algoliaData.currencyCode];
+    return `
+      <article class="uni-Hit">
+      <a href="#"  class="uni-Hit-inner">
+        <div class="uni-Hit-image">
+            <img  src="${img.dis_base_link}" alt="${img.alt}" loading="lazy"> 
+            </div>
+        
+       <div class="uni-Hit-Body">
+         <header class="uni-Hit-header">
+           <h2 class="uni-Hit-category">Category</h2>
+           <h1 class="uni-Hit-title">${hit.name}</h1>
+         </header> 
+         <p class="uni-Hit-description">${hit.description}</p>
+         <footer>
+          <span class="uni-Hit-Currency">${algoliaData.currencySymbol} </span><strong>${price}</strong>
+         </footer>
+       </div>
+      
+      </a>
+      </article>
+    `;
+  },
+  'enable': true,
+  'applicationID': 'SJLFQYQA2U',
+  'searchApiKey': '2e88068356ba17d0008787699965a189',
+  'locale': 'en_US',
+  'currencyCode': 'USD',
+  'currencySymbol': '\x24',
+  'productsIndex': 'algolia01_tech_prtnr_na08_dw__RefArch__products__en_US',
+  'categoriesIndex': 'algolia01_tech_prtnr_na08_dw__RefArch__categories__en_US',
+  'quickViewUrlBase': '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView',
+  'strings': {
+    'moreResults': 'More Results',
+    'noResults': 'No results',
+    'result': 'result',
+    'results': 'results',
+    'bestMetches': 'Best Matches',
+    'priceAsc': 'Price (asc)',
+    'priceDesc': 'Price (desc)',
+    'reset': 'Reset',
+    'brandPanelTitle': 'Brand',
+    'sizePanelTitle': 'Size Chart',
+    'colorPanelTitle': 'Colors',
+    'pricePanelTitle': 'Price',
+    'categoryPanelTitle': 'Category',
+    'products': 'Products',
+    'categories': 'Categories',
+    'priceFilter': {
+      'separator': 'to',
+      'submit': 'Go',
+    },
+    'newArrivals': 'New Arrivals',
+  },
+  'noImages': {
+    'large': '/on/demandware.static/Sites-RefArch-Site/-/default/dwc258fdb5/images/noimagelarge.png',
+    'medium': '/on/demandware.static/Sites-RefArch-Site/-/default/dwd7fc9b54/images/noimagemedium.png',
+    'small': '/on/demandware.static/Sites-RefArch-Site/-/default/dwd0542312/images/noimagesmall.png',
+  },
+};
+
+let window = window || {};
+window.algoliaData = algoliaData;
+
+export const inputContainer = '#unified-ui';
 export const inputContent = 'Search for products';
 export const keyboardShortcuts = ['/'];
-export const appId = 'latency';
-export const searchApiKey = '6be0576ff61c053d5f9a3225e2a90f76';
-export const hitComponent = Hit;
+export const appId = window.algoliaData.applicationID;
+export const searchApiKey = window.algoliaData.searchApiKey;
+export const hitComponent = window.algoliaData.hitComponent || (() => null);
 export const index = {
-  indexName: 'instant_search',
+  indexName: window.algoliaData.productsIndex,
   searchParameters: {
     analytics: true,
     clickAnalytics: true,
     hitsPerPage: 18,
-    attributesToSnippet: ['description:25'],
+    attributesToSnippet: ['short_description:25'],
   },
 };
 
@@ -59,9 +128,9 @@ export const index = {
 */
 
 export const googleAnalytics = false;
-export const setUserToken = (setToken) => {
-  setToken(/* The current user's `userToken` */);
-};
+// export const setUserToken = (setToken) => {
+//   setToken(/* The current user's `userToken` */);
+// };
 
 /*
 |-------------------------------------------------------------------------------
@@ -79,11 +148,11 @@ export const setUserToken = (setToken) => {
 export const sorts = [
   {
     label: 'Price ascending',
-    value: 'instant_search_price_asc',
+    value: window.algoliaData.productsIndex + '__price_USD_asc',
   },
   {
     label: 'Price descending',
-    value: 'instant_search_price_desc',
+    value: window.algoliaData.productsIndex + '__price_USD_desc',
   },
 ];
 
@@ -108,8 +177,9 @@ export const refinements = [
     label: 'Category',
     options: {
       attributes: [
-        'hierarchicalCategories.lvl0',
-        'hierarchicalCategories.lvl1',
+        '__primary_category.0',
+        '__primary_category.1',
+        '__primary_category.2',
       ],
       limit: 6,
       searchable: true,
@@ -133,11 +203,27 @@ export const refinements = [
     },
   },
   {
+    type: 'list',
+    header: 'Sizes',
+    label: 'Sizes',
+    options: {
+      attribute: 'size',
+      searchable: true,
+      showMore: true,
+      limit: 6,
+      showMoreLimit: 20,
+      translations: {
+        showMore: (expanded) =>
+          expanded ? '- View fewer sizes' : '+ View more sizes',
+      },
+    },
+  },
+  {
     type: 'slider',
     header: 'Price',
     label: 'Price',
     options: {
-      attribute: 'price',
+      attribute: `price.${algoliaData.currencyCode}`,
       transformValue: (value) => (
         <>
           <span className="uni-Hit-currency">$</span>
@@ -164,12 +250,12 @@ export const refinements = [
 |
 */
 
-export const suggestionsIndex = {
-  indexName: 'instant_search_demo_query_suggestions',
-  searchParameters: {
-    hitsPerPage: 6,
-  },
-};
+// export const suggestionsIndex = {
+//   indexName: 'instant_search_demo_query_suggestions',
+//   searchParameters: {
+//     hitsPerPage: 6,
+//   },
+// };
 
 /*
 |-------------------------------------------------------------------------------
@@ -185,7 +271,7 @@ export const suggestionsIndex = {
 
 export const styles = {
   colors: {
-    primary: '#d02139',
+    primary: '#000000',
     secondary: '#21243d',
   },
   text: {

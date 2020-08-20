@@ -39,10 +39,13 @@ export function App({ config }) {
     ...config.index.searchParameters,
   };
   const ConnectedHit = React.useMemo(
-    () =>
-      connectHitInsights(aa)((props) => (
-        <config.hitComponent {...props} view={view} />
-      )),
+    () => {
+        return connectHitInsights(aa)((props) => {
+          const template = config.hitComponent({ ...props, view});
+          return <div dangerouslySetInnerHTML={{__html: template}} />
+        })
+
+      },
     [aa, view]
   );
 

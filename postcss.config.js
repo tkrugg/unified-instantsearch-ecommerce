@@ -2,7 +2,8 @@
 
 // When the configuration file refers to `window`, we need to shim it so it
 // doesn't break when processed with Node during the build step.
-window = global;
+// let window = (process || {}).global;
+// window.algoliaData = {}
 
 require('module-alias/register');
 require('ignore-styles');

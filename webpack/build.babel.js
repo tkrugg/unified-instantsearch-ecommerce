@@ -15,17 +15,17 @@ export default merge(base, {
     path: path.resolve('./export'),
   },
   optimization: {
-    minimizer: [
-      new TerserJSPlugin({
-        terserOptions: {
-          output: {
-            comments: new RegExp(config.licenseBanner),
-          },
-        },
-        extractComments: false,
-      }),
-      new OptimizeCSSAssetsPlugin({}),
-    ],
+    // minimizer: [
+    //   new TerserJSPlugin({
+    //     terserOptions: {
+    //       output: {
+    //         comments: new RegExp(config.licenseBanner),
+    //       },
+    //     },
+    //     extractComments: false,
+    //   }),
+    //   new OptimizeCSSAssetsPlugin({}),
+    // ],
   },
   plugins: [
     new webpack.BannerPlugin({

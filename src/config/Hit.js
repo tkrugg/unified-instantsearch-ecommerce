@@ -1,9 +1,10 @@
-import React from 'preact/compat';
+import React from 'react';
 import { Highlight, Snippet } from 'react-instantsearch-dom';
 
 import './Hit.scss';
 
 export function Hit({ hit, insights, view }) {
+  const image = hit.image_groups[1].images[0]
   return (
     <article
       className="uni-Hit"
@@ -13,9 +14,10 @@ export function Hit({ hit, insights, view }) {
         })
       }
     >
+    
       <a href={hit.url} className="uni-Hit-inner">
         <div className="uni-Hit-image">
-          <img src={hit.image} alt={hit.name} loading="lazy" />
+          <img src={image.dis_base_link} alt={image.alt} loading="lazy" />
         </div>
 
         <div className="uni-Hit-Body">
@@ -29,13 +31,13 @@ export function Hit({ hit, insights, view }) {
 
           {view === 'list' && (
             <p className="uni-Hit-description">
-              <Snippet attribute="description" tagName="mark" hit={hit} />
+              <Snippet attribute="short_description" tagName="mark" hit={hit} />
             </p>
           )}
 
           <footer>
             <span className="uni-Hit-currency">$</span>
-            <span className="uni-Hit-price">{hit.price.toLocaleString()}</span>
+            <span className="uni-Hit-price">{hit.price.USD.toLocaleString()}</span>
           </footer>
         </div>
 
