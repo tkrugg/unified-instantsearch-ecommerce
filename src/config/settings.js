@@ -15,7 +15,7 @@
 
 import React from 'preact/compat';
 
-import './Hit.scss';
+import {Hit} from "./Hit";
 /*
 |-------------------------------------------------------------------------------
 | Base configuration                           http://alg.li/unified/base-config
@@ -29,83 +29,16 @@ import './Hit.scss';
 |
 */
 
-var algoliaData = {
-  'hitComponent': ({ hit }) => {
-    console.log(hit);
-
-    const img = hit.image_groups.find(imageGroup => imageGroup.view_type === 'large').images[0];
-    const price = hit.price[algoliaData.currencyCode];
-    return `
-      <article class="uni-Hit">
-      <a href="#"  class="uni-Hit-inner">
-        <div class="uni-Hit-image">
-            <img  src="${img.dis_base_link}" alt="${img.alt}" loading="lazy"> 
-            </div>
-        
-       <div class="uni-Hit-Body">
-         <header class="uni-Hit-header">
-           <h2 class="uni-Hit-category">Category</h2>
-           <h1 class="uni-Hit-title">${hit.name}</h1>
-         </header> 
-         <p class="uni-Hit-description">${hit.description}</p>
-         <footer>
-          <span class="uni-Hit-Currency">${algoliaData.currencySymbol} </span><strong>${price}</strong>
-         </footer>
-       </div>
-      
-      </a>
-      </article>
-    `;
-  },
-  'enable': true,
-  'applicationID': 'SJLFQYQA2U',
-  'searchApiKey': '2e88068356ba17d0008787699965a189',
-  'locale': 'en_US',
-  'currencyCode': 'USD',
-  'currencySymbol': '\x24',
-  'productsIndex': 'algolia01_tech_prtnr_na08_dw__RefArch__products__en_US',
-  'categoriesIndex': 'algolia01_tech_prtnr_na08_dw__RefArch__categories__en_US',
-  'quickViewUrlBase': '/on/demandware.store/Sites-RefArch-Site/en_US/Product-ShowQuickView',
-  'strings': {
-    'moreResults': 'More Results',
-    'noResults': 'No results',
-    'result': 'result',
-    'results': 'results',
-    'bestMetches': 'Best Matches',
-    'priceAsc': 'Price (asc)',
-    'priceDesc': 'Price (desc)',
-    'reset': 'Reset',
-    'brandPanelTitle': 'Brand',
-    'sizePanelTitle': 'Size Chart',
-    'colorPanelTitle': 'Colors',
-    'pricePanelTitle': 'Price',
-    'categoryPanelTitle': 'Category',
-    'products': 'Products',
-    'categories': 'Categories',
-    'priceFilter': {
-      'separator': 'to',
-      'submit': 'Go',
-    },
-    'newArrivals': 'New Arrivals',
-  },
-  'noImages': {
-    'large': '/on/demandware.static/Sites-RefArch-Site/-/default/dwc258fdb5/images/noimagelarge.png',
-    'medium': '/on/demandware.static/Sites-RefArch-Site/-/default/dwd7fc9b54/images/noimagemedium.png',
-    'small': '/on/demandware.static/Sites-RefArch-Site/-/default/dwd0542312/images/noimagesmall.png',
-  },
-};
-
-let window = window || {};
-window.algoliaData = algoliaData;
-
 export const inputContainer = '#unified-ui';
 export const inputContent = 'Search for products';
 export const keyboardShortcuts = ['/'];
-export const appId = window.algoliaData.applicationID;
-export const searchApiKey = window.algoliaData.searchApiKey;
-export const hitComponent = window.algoliaData.hitComponent || (() => null);
+export const hitComponent = Hit
+export const appId = '';
+export const searchApiKey = '';
+export const currencyCode = '';
+
 export const index = {
-  indexName: window.algoliaData.productsIndex,
+  indexName: '',
   searchParameters: {
     analytics: true,
     clickAnalytics: true,
@@ -148,11 +81,11 @@ export const googleAnalytics = false;
 export const sorts = [
   {
     label: 'Price ascending',
-    value: window.algoliaData.productsIndex + '__price_USD_asc',
+    value: index.indexName + '__price_USD_asc',
   },
   {
     label: 'Price descending',
-    value: window.algoliaData.productsIndex + '__price_USD_desc',
+    value: index.indexName + '__price_USD_desc',
   },
 ];
 
@@ -223,7 +156,7 @@ export const refinements = [
     header: 'Price',
     label: 'Price',
     options: {
-      attribute: `price.${algoliaData.currencyCode}`,
+      attribute: `price.${currencyCode}`,
       transformValue: (value) => (
         <>
           <span className="uni-Hit-currency">$</span>

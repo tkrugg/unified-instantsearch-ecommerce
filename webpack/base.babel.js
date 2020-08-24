@@ -9,6 +9,8 @@ export default {
   entry: './src/index.js',
   output: {
     filename: `${config.filename}.js`,
+    library: 'UnifiedUI',
+    libraryTarget: 'umd'
   },
   plugins: [new CleanWebpackPlugin()],
   module: {

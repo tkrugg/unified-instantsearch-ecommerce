@@ -40,10 +40,13 @@ export function App({ config }) {
   };
   const ConnectedHit = React.useMemo(
     () => {
-        return connectHitInsights(aa)((props) => {
-          const template = config.hitComponent({ ...props, view});
-          return <div dangerouslySetInnerHTML={{__html: template}} />
-        })
+        // return connectHitInsights(aa)((props) => {
+        //   const template = config.hitComponent({ ...props, view});
+        //   return <div dangerouslySetInnerHTML={{__html: template}} />
+        // })
+      return connectHitInsights(aa)((props) => (
+            <config.hitComponent {...props} view={view} />
+        ));
 
       },
     [aa, view]
